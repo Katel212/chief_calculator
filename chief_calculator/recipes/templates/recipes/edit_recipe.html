@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+{%extends "recipes/base.html"%}
+{% load static %}
+
+{% block title %}<title>Личный кабинет</title>{%endblock%}
+{%block head%}
+<h1 class="h1">{{recipe.name}}</h1>
+{%endblock%}
+{% block content %}
+<div class="lk-orders">
+                <div class="lk-one-order-table">
+
+                    {% for k,v in ingredients.items %}
+                  <div class="top-table">
+                      <div class="lk-number-order">
+                          {{k}}
+                      </div>
+                      <div class="lk-status-order">
+                          {{v}}
+                      </div>
+                  </div>
+                    {% endfor %}
+                  <article class="notes">
+                    <p>{{recipe.notes}}</p>
+                  </article>>
+                    </div>
+    </div>
+{% endblock %}

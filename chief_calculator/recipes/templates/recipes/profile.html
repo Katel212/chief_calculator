@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+{%extends "recipes/base.html"%}
+{% load static %}
+
+{% block title %}<title>Личный кабинет</title>{%endblock%}
+{%block head%}<h1 class="h1">Сохраненные рецепты</h1>
+<div class="add-recipe-btn" style="margin-left: auto;margin-right: 20px;max-width: 200px;"><a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "add_recipe"%}'>Добавить рецепт</a></div>
+{%endblock%}
+{% block content %}
+<div class="lk-orders">
+                <div class="lk-one-order-table">
+                    {% if recipes %}
+                    {% for recipe in recipes %}
+                  <div class="top-table">
+                      <div class="lk-number-order">
+                          <a href = '{{recipe.get_absolute_url}}'>{{recipe.name}}</a>
+
+                      </div>
+                      <div class="lk-status-order">
+                          {{recipe.price}}
+                      </div>
+                  </div>
+                    {% endfor %}
+                    {%else%}
+                    <div class="top-table">
+                        У вас пока нет рецептов!
+                    </div>
+                    {%endif%}
+                    </div>
+    </div>
+{% endblock %}

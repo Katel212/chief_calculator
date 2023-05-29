@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+{%extends "recipes/base.html"%}
+{% load static %}
+
+{% block title %}<title>Личный кабинет</title>{%endblock%}
+{%block head%}<h1 class="h1">{{recipe.name}}</h1>
+{% if belonging%}
+<div class="add-recipe-btn" style="margin-left: auto;margin-right: 10px;max-width: 100px;">
+    <a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "edit_recipe" recipe.id %}'>Изменить</a>
+</div>
+
+{% else %}
+{% if request.user.is_authenticated %}
+<div class="add-recipe-btn" style="margin-left: auto;margin-right: 10px;max-width: 100px;">
+    <form action="" method="post">
+        {% csrf_token %}
+    <input type="submit" class="btn btn-primary rounded-pill px-3" value="Сохранить себе"/>
+    </form>
+</div>
+{% else %}
+<div class="add-recipe-btn" style="margin-left: auto;margin-right: 10px;max-width: 100px;">
+    <a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "login"%}'>Сохранить себе</a>
+</div>
+{% endif %}
+{% endif %}
+
+{%endblock%}
+{% block content %}
+<div class="lk-orders">
+                <div class="lk-one-order-table">
+
+                    {% for k,v in ingredients.items %}
+                  <div class="top-table">
+                      <div class="lk-number-order">
+                          {{k}}
+                      </div>
+                      <div class="lk-status-order">
+                          {{v}}
+                      </div>
+                  </div>
+                    {% endfor %}
+                  <article class="notes">
+                    <p>{{recipe.notes}}</p>
+                  </article>>
+                    </div>
+    </div>
+<div class="add-recipe-btn" style="margin-left: auto;margin-right: 10px;max-width: 100px;">
+    <a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "recipe_price" recipe.id None %}'>Рассчитать себестоимость</a>
+</div>
+
+{% endblock %}

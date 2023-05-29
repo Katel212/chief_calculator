@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+{%extends "recipes/base.html"%}
+{% load static %}
+
+{% block title %}
+    <title>{{recipe.name}} - себестоимость</title>
+{%endblock%}
+
+{%block head%}
+    <h1 class="h1">{{recipe.name}}</h1>
+{%endblock%}
+
+{% block content %}
+    <div class="body-recipe">
+    <div class="contents">
+        <table style="height:200px; width: 1000px; margin: 0.5rem;">
+            <tbody>
+            {% for i in best_store.final_ingredients %}
+            <tr class="row-row">
+                <td class="row-ingred">{{i.name}}</td>
+                <td class="row-weight">{{ i.quantity }}</td>
+                <td class="row-price">{{ i.price }}</td>
+                <td class="row-link"><a href="#">{{ i.url }}</a></td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <div class="recommend-price">
+    <div class="recommend-price-info">
+        <p>Рекомендуемая итоговая стоимость</p>
+    </div>
+    <div class="recommend-price-price">
+<!--переменная с ценой--><p>{{ best_store.cart_price }}</p>
+    </div>
+    </div>
+    <div class="final-price">
+    <div class="final-price-info">
+        <p>
+            Итоговая стоимость
+        </p>
+    </div>
+    <div class="final-price-price">
+        <input autofocus placeholder="placeholder" style="width: 50px">
+    </div>
+    </div>
+    <div class="card-choose">
+    {% for k,v in stores_info.items %}
+    <div class="card-block">
+        <div class="card-block-name">
+            {{ k }}
+        </div>
+        <div class="card-block-price">
+            {{ v.cart_price}}
+        </div>
+        <a class="card-block-button" type="button" href = '{% url "recipe_price" recipe.id k %}'> Выбрать</a>
+
+    </div>
+        {% endfor %}
+
+
+    </div>
+
+{% endblock %}
