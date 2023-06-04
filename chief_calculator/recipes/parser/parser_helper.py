@@ -41,11 +41,10 @@ class Ingredient:
             self.normalize_quantity(tmp)
             self.price_per_gr = self.price / self.quantity
 
-
     def __str__(self):
         return f"{self.name}: {self.price}, {self.quantity}"
 
     def normalize_quantity(self, tmp):
-        self.quantity = int(tmp.group(1))
+        self.quantity = float(tmp.group(1).replace(',', '.'))
         if tmp.group(2) == 'л' or tmp.group(2) == 'кг' or tmp.group(2) == 'Л' or tmp.group(2) == 'КГ':
             self.quantity *= 1000

@@ -30,13 +30,13 @@
 <div class="lk-orders">
                 <div class="lk-one-order-table">
 
-                    {% for k,v in ingredients.items %}
+                    {% for i in ingredients %}
                   <div class="top-table">
                       <div class="lk-number-order">
-                          {{k}}
+                          {{i.name}}
                       </div>
                       <div class="lk-status-order">
-                          {{v}}
+                          {{i.quantity}}
                       </div>
                   </div>
                     {% endfor %}

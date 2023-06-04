@@ -1,10 +1,13 @@
 from django.contrib.auth.decorators import login_required
+
+from .forms import RecipeForm, IngredientForm
 from .parser import parser_sdelay_tort as pst
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from .models import Recipe, Ingredient, Store
+from .models import Recipe, Ingredient
+from django.forms import formset_factory
 from django.views.generic import (
-    ListView,
+    ListView, TemplateView,
 )
 from django.core.cache import cache
 
@@ -27,14 +30,15 @@ def profile(request):
 
 def show_recipe(request, id_item):
     recipe = Recipe.objects.get(id=id_item)
+    ingredients = Ingredient.objects.filter(recipe=recipe.id)
     # если авторизован, тогда есть смысл проверять принадлежность
     if request.user.is_authenticated:
         belonging = True if recipe.user.id == request.user.id else False
-        context = {'recipe': recipe, 'ingredients': recipe.ingredients, "belonging": belonging}
+
+        context = {'recipe': recipe, 'ingredients': ingredients, "belonging": belonging}
         # если метод POST, то точно не принадлежит, добавляем рецепт и отображаем с кнопкой "добавлен"
         if request.method == "POST":
-            new_recipe = Recipe(name=recipe.name,
-                                ingredients=recipe.ingredients, notes=recipe.notes,
+            new_recipe = Recipe(name=recipe.name, notes=recipe.notes,
                                 user=request.user)
             new_recipe.save()
             context["belonging"] = True
@@ -48,25 +52,26 @@ def show_recipe(request, id_item):
             return redirect(views.register)
         else:
             return render(request, 'recipes/recipe_detail.html',
-                          context={'recipe': recipe, 'ingredients': recipe.ingredients, "belonging": False})
+                          context={'recipe': recipe, 'ingredients': ingredients, "belonging": False})
 
 
 def recipe_price(request, id_item, store):
     recipe = Recipe.objects.get(id=id_item)
+    ingredients = Ingredient.objects.filter(recipe=recipe.id)
+    ingredients_dict = {}
+    for i in ingredients:
+        ingredients_dict[i.name] = i.quantity
     if store == 'None':
         stores_info = {}
-        st_info = pst.ParserSdelayTort(recipe.ingredients)
+        st_info = pst.ParserSdelayTort(ingredients_dict)
         st_info.get_ingredients_info()
-        print("tm=", st_info.cart_price)
         stores_info['Сделай торт'] = st_info
-        tm_info = ptm.ParserTortomaster(recipe.ingredients)
+        tm_info = ptm.ParserTortomaster(ingredients_dict)
         tm_info.get_ingredients_info()
-        print("tm=", tm_info.cart_price)
         stores_info['Тортомастер'] = tm_info
 
-        pk_info = ppk.ParserPekarKonditer(recipe.ingredients)
+        pk_info = ppk.ParserPekarKonditer(ingredients_dict)
         pk_info.get_ingredients_info()
-        print("pk=", pk_info.cart_price)
         stores_info['Пекарь кондитер'] = pk_info
 
         best_store = best_offer(stores_info)
@@ -77,7 +82,7 @@ def recipe_price(request, id_item, store):
                                                                      'best_store': stores_info[best_store]})
     else:
         s = cache.get('stores_info')
-        print(s)
+
         return render(request, 'recipes/recipe_price.html', context={'recipe': recipe,
                                                                      'stores_info': s,
                                                                      'best_store': s[store]})
@@ -99,6 +104,30 @@ def best_offer(stores_info: dict):
             store = s[0]
         print(store)
     return store
+
+
+def add_recipe(request):
+    IFS = formset_factory(IngredientForm, extra=3)
+    if request.method == 'POST':
+        ingredients_formset = IFS(request.POST, prefix='ingredients')
+        recipe_form = RecipeForm(request.POST)
+        if recipe_form.is_valid():
+            if ingredients_formset.is_valid():
+                new_recipe = recipe_form.save(commit=False)
+                new_recipe.user = request.user
+                new_recipe.save()
+                for f in ingredients_formset:
+                    new_ingredient = f.save(commit=False)
+                    new_ingredient.recipe = new_recipe
+                    new_ingredient.save()
+                return redirect('recipe_detail', id_item=new_recipe.id)
+            context = {"ingredients_formset": ingredients_formset, "recipe_form": recipe_form}
+            return render(request, 'recipes/recipe_form.html', context=context)
+    else:
+        ingredients_formset = IFS(prefix='ingredients')
+        recipe_form = RecipeForm()
+        context = {"ingredients_formset": ingredients_formset, "recipe_form": recipe_form}
+        return render(request, 'recipes/recipe_form.html', context=context)
 
 
 class HomeView(ListView):

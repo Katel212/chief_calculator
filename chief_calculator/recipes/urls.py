@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import HomeView
+from .views import HomeView,  add_recipe
 
 urlpatterns = [
 
@@ -11,7 +11,7 @@ urlpatterns = [
     path('recipe/<int:id_item>', views.show_recipe, name='recipe_detail'),
     path('recipe/<int:id_item>/price/<str:store>', views.recipe_price, name='recipe_price'),
     path('recipe/<int:pk>/edit', HomeView.as_view(), name='edit_recipe'),
-    path('recipe/add', HomeView.as_view(), name='add_recipe'),
+    path('recipe/add', add_recipe, name='add_recipe'),
 
 ]
 

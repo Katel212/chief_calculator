@@ -53,6 +53,8 @@ class ParserTortomaster(ParserIngredients):
             for j in range(0, len(self.ingredients_info[i])):
                 if 0 < self.ingredients_info[i][j].quantity - needed_quantity < min_difference:
                     idx = j
+                    min_difference = self.ingredients_info[i][j].quantity - needed_quantity
+
             if idx == 0:
                 self.ingredients_info[i] += [Ingredient("не найден", "0", "")]
             self.final_ingredients += [self.ingredients_info[i][idx]]

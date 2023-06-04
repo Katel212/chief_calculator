@@ -21,8 +21,10 @@ class ParserPekarKonditer(ParserIngredients):
             idx = 0
             min_difference = 1000
             for j in range(0, len(self.ingredients_info[i])):
-                if 0 < self.ingredients_info[i][j].quantity - needed_quantity < min_difference:
-                    idx = j
+                if self.ingredients_info[i][j].quantity is not None:
+                    if 0 < self.ingredients_info[i][j].quantity - needed_quantity < min_difference:
+                        idx = j
+                        min_difference = self.ingredients_info[i][j].quantity - needed_quantity
             if idx == 0:
                 self.ingredients_info[i] += [Ingredient("не найден", "0", "")]
             self.final_ingredients += [self.ingredients_info[i][idx]]
@@ -45,12 +47,12 @@ class ParserPekarKonditer(ParserIngredients):
             self.ingredients_info[i] = []
             real_name = i.split()[0].strip().lower()
             for r in result[0:5]:
-                name = r.find("div", class_="product-item-title").contents[1].contents[0]
+                name = r.find("div", class_="product-item-title").contents[1].contents[0].lower().replace("\t", "").replace("\n","")
                 if re.search(rf'(\w|\d|\s)*\s*{real_name}\s(\w|\d|\s)*', name):
                     url = f'https://rostov.konditermarket.ru{r.find("div", class_="product-item-title").contents[1].attrs["href"]}'
-                    price = r.findAll("span", "product-item-price-current")[0].text.replace(' ', '')
-                    if 'руб' in price:
-                        if r.findAll('div', class_='product-item-button-container notinsale') is None:
+                    price = r.findAll("span", "product-item-price-current")[0].text.replace("\t", "").replace("\n","")
+                    if re.search(r'(\w|\d|\s)*\s*руб\s*(\w|\d|\s)*', price):
+                        if r.find('div', class_='product-item-button-container notinsale') is None:
                             self.ingredients_info[i] += [Ingredient(name, price, url)]
         self.most_matching_ingredient()
         self.calculate_cart_price()
