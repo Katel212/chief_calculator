@@ -94,7 +94,7 @@ def best_offer(stores_info: dict):
     best_quantity = 0
     for s in stores_info.items():
         store_object = s[1]
-        filtered_ingredients = list(filter(lambda x: x.name != 'не найден', store_object.final_ingredients))
+        filtered_ingredients = list(filter(lambda x: x.name != 'не найден', store_object.final_ingredients.values()))
         if len(filtered_ingredients) > best_quantity:
             best_price = store_object.cart_price_per_gr
             best_quantity = len(filtered_ingredients)

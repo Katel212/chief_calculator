@@ -4,23 +4,23 @@
 {% load static %}
 
 {% block title %}<title>Личный кабинет</title>{%endblock%}
-{%block head%}<h1 class="h1">Сохраненные рецепты</h1>
-<div class="add-recipe-btn" style="margin-left: auto;margin-right: 20px;max-width: 200px;"><a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "add_recipe"%}'>Добавить рецепт</a></div>
+{%block head%}<div class="head-h1"><h1 >Сохраненные рецепты</h1></div>
+<div class="add-recipe-btn" style="float: right;max-width: 200px;"><a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "add_recipe"%}'>Добавить рецепт</a></div>
 {%endblock%}
 {% block content %}
 <div class="lk-orders">
                 <div class="lk-one-order-table">
                     {% if recipes %}
                     {% for recipe in recipes %}
-                  <div class="top-table">
-                      <div class="lk-number-order">
-                          <a href = '{{recipe.get_absolute_url}}'>{{recipe.name}}</a>
+                    <div class="post-preview">
+                    <div class="recipe-price" style="float: right">{{ recipe.price }}</div>
+                        <a href="{{recipe.get_absolute_url}}">
+                            <h2 class="post-title">{{recipe.name}}</h2>
+                            <h3 class="post-subtitle">{{recipe.notes}}</h3>
+                        </a>
 
-                      </div>
-                      <div class="lk-status-order">
-                          {{recipe.price}}
-                      </div>
-                  </div>
+                    </div>
+                    <hr class="my-4" />
                     {% endfor %}
                     {%else%}
                     <div class="top-table">

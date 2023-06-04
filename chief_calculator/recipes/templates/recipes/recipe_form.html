@@ -7,8 +7,21 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Новый рецепт</legend>
                 {{ recipe_form|crispy }}
-                {{ingredients_formset|crispy}}
+            <div class="ingredients">
+            <legend class="border-bottom mb-4">Ингредиенты</legend>
 
+                <table style="border-spacing: 1rem 1rem;border-collapse: separate;">
+                    <th>Название</th>
+                    <th>Количество(гр)</th>
+                    {{ ingredients_formset.management_form }}
+                    {% for form in ingredients_formset %}
+                        <tr>
+                            <td>{{ form.name }}</td>
+                        <td> {{ form.quantity }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Сохранить</button>

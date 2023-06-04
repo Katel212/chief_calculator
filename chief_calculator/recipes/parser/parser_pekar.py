@@ -10,10 +10,13 @@ from .parser_helper import ParserIngredients, Ingredient
 class ParserPekarKonditer(ParserIngredients):
 
     def calculate_cart_price(self):
-        for i in self.final_ingredients:
-            self.cart_price += i.price
+        for k, v in self.raw_ingredients.items():
+            self.cart_price += self.final_ingredients[k].price_per_gr * v
         self.cart_price_per_gr = sum(
-            x.price_per_gr for x in list(filter(lambda x: x.name != 'не найден', self.final_ingredients)))
+            x.price_per_gr for x in list(filter(lambda x: x.name != 'не найден', self.final_ingredients.values())))
+        self.cart_price = int(self.cart_price)
+        self.recommend_price = self.cart_price*3
+
 
     def most_matching_ingredient(self):
         for i in self.raw_ingredients:
@@ -27,7 +30,7 @@ class ParserPekarKonditer(ParserIngredients):
                         min_difference = self.ingredients_info[i][j].quantity - needed_quantity
             if idx == 0:
                 self.ingredients_info[i] += [Ingredient("не найден", "0", "")]
-            self.final_ingredients += [self.ingredients_info[i][idx]]
+            self.final_ingredients[i] = self.ingredients_info[i][idx]
 
     @staticmethod
     def get_search_string(ingredient_list: str):

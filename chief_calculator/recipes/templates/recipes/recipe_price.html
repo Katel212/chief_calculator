@@ -14,14 +14,27 @@
 {% block content %}
     <div class="body-recipe">
     <div class="contents">
-        <table style="height:200px; width: 1000px; margin: 0.5rem;">
+        <table style="height:200px; width: 1000px; border-spacing: 1rem 1rem;border-collapse: separate;">
             <tbody>
-            {% for i in best_store.final_ingredients %}
+            <tr>
+                <th>Ингредиент</th>
+                <th>Вес</th>
+                <th>Цена</th>
+                <th>Ссылка</th>
+            </tr>
+            {% for k,v in best_store.final_ingredients.items %}
             <tr class="row-row">
-                <td class="row-ingred">{{i.name}}</td>
-                <td class="row-weight">{{ i.quantity }}</td>
-                <td class="row-price">{{ i.price }}</td>
-                <td class="row-link"><a href="#">{{ i.url }}</a></td>
+                <td class="row-ingred">{{k}}</td>
+
+                {% if v.name == 'не найден' %}
+                    <td class="row-weight"></td>
+                <td class="row-price"></td>
+                    <td class="row-link">{{ v.name}}</td>
+                {% else %}
+                    <td class="row-weight">{{ v.quantity }}</td>
+                    <td class="row-price">{{ v.price }}</td>
+                    <td class="row-link"><a href="#">{{ v.name}}</a></td>
+                {% endif %}
             </tr>
             {% endfor %}
 
@@ -31,10 +44,18 @@
     </div>
     <div class="recommend-price">
     <div class="recommend-price-info">
-        <p>Рекомендуемая итоговая стоимость</p>
+        <p>Итоговая себестоимость</p>
     </div>
     <div class="recommend-price-price">
 <!--переменная с ценой--><p>{{ best_store.cart_price }}</p>
+    </div>
+    </div>
+    <div class="recommend-price">
+    <div class="recommend-price-info">
+        <p>Рекомендуемая итоговая стоимость</p>
+    </div>
+    <div class="recommend-price-price">
+<!--переменная с ценой--><p>{{best_store.recommend_price}}</p>
     </div>
     </div>
     <div class="final-price">
@@ -47,11 +68,14 @@
         <input autofocus placeholder="placeholder" style="width: 50px">
     </div>
     </div>
+    <div class="add-recipe-btn" style="margin-left: auto;margin-right: 100px;max-width: 100px;">
+    <a class="btn btn-primary rounded-pill px-3" type="button" href = '#'>Сохранить</a>
+</div>
     <div class="card-choose">
     {% for k,v in stores_info.items %}
     <div class="card-block">
         <div class="card-block-name">
-            {{ k }}
+            <b>{{ k }}</b>
         </div>
         <div class="card-block-price">
             {{ v.cart_price}}
@@ -60,8 +84,6 @@
 
     </div>
         {% endfor %}
-
-
     </div>
 
 {% endblock %}

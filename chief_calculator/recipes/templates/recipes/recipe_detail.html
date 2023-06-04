@@ -27,25 +27,28 @@
 
 {%endblock%}
 {% block content %}
-<div class="lk-orders">
-                <div class="lk-one-order-table">
+<div class="body-recipe">
+    <div class="contents">
+        <table style="height:200px; width: 1000px; margin: 0.5rem;">
+            <tbody>
+            <tr>
+                <th>Ингредиент</th>
+                <th>Вес</th>
+            </tr>
+            {% for i in ingredients %}
 
-                    {% for i in ingredients %}
-                  <div class="top-table">
-                      <div class="lk-number-order">
-                          {{i.name}}
-                      </div>
-                      <div class="lk-status-order">
-                          {{i.quantity}}
-                      </div>
-                  </div>
-                    {% endfor %}
-                  <article class="notes">
-                    <p>{{recipe.notes}}</p>
-                  </article>>
-                    </div>
+            <tr class="row-row">
+                <td class="row-ingred">{{i.name}}</td>
+                <td class="row-weight">{{ i.quantity }}</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
     </div>
-<div class="add-recipe-btn" style="margin-left: auto;margin-right: 10px;max-width: 100px;">
+<div class="recipe-notes" style="margin-top: 3rem;"><article>{{ recipe.notes }}</article></div>
+    </div>
+<div class="add-recipe-btn" style="margin-top: 3rem; margin-left: auto;margin-right: 10px;max-width: 100px;">
     <a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "recipe_price" recipe.id None %}'>Рассчитать себестоимость</a>
 </div>
 

@@ -9,9 +9,13 @@ import requests
 class ParserTortomaster(ParserIngredients):
 
     def calculate_cart_price(self):
-        for i in self.final_ingredients:
-            self.cart_price += i.price
-        self.cart_price_per_gr = sum(x.price_per_gr for x in list(filter(lambda x: x.name != 'не найден', self.final_ingredients)))
+        for k, v in self.raw_ingredients.items():
+            self.cart_price += self.final_ingredients[k].price_per_gr * v
+        self.cart_price_per_gr = sum(x.price_per_gr for x in list(filter(lambda x: x.name != 'не найден', self.final_ingredients.values())))
+        self.cart_price = int(self.cart_price)
+
+        self.recommend_price = self.cart_price*3
+
 
 
     def __init__(self, ingredients):
@@ -57,4 +61,4 @@ class ParserTortomaster(ParserIngredients):
 
             if idx == 0:
                 self.ingredients_info[i] += [Ingredient("не найден", "0", "")]
-            self.final_ingredients += [self.ingredients_info[i][idx]]
+            self.final_ingredients[i] = self.ingredients_info[i][idx]

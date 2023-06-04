@@ -5,8 +5,8 @@ body {
   background-size: cover;
   font-family: 'Arial', sans-serif; }
 .btn-outline-primary {
-  color: #917c55;
-  border-color: #917c55; }
+  color: #835648;
+  border-color: #835648; }
   .btn-outline-primary:hover {
     color: #fff;
     background-color: #917c55;
@@ -731,20 +731,23 @@ tr.row-row{
   height: 3rem !important;
 }
 td.row-ingred {
-max-width: 450px !important;
-width: 400px;
+max-width: 30rem !important;
+width: 25rem;
 }
 td.row-weight{
-
+max-width: 10rem;
+width: 5rem;
 }
 td.row-price{
-
+max-width: 10rem;
+width: 5rem;
 }
 td.row-link{
   border-left: solid;
   border-color: #835648;
-  border-width: 5px;
-  padding-left: 10px;
+  border-width: 0.5rem;
+  padding-left: 1rem;
+  max-width: 40rem;
 }
 .recommend-price {
   display: flex;
@@ -810,8 +813,12 @@ margin-top: 15px;
 }
 .card-block-button{
   margin-top: 15px;
-  border-radius: 10px;
+  border-radius: 30px;
   background-color:#835648;
+  height: 25px;
+display: inline-block;
+width: 85px;
+  color: #fff2ec;
 }
 .card-block-button:active{
 }

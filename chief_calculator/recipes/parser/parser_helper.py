@@ -7,9 +7,11 @@ class ParserIngredients(ABC):
     def __init__(self, ingredients: dict):
         self.raw_ingredients = ingredients
         self.ingredients_info = {}
-        self.final_ingredients = []
+        self.final_ingredients = {}
         self.cart_price = 0
         self.cart_price_per_gr = 1000
+        self.recommend_price = 0
+
 
     @staticmethod
     @abstractmethod
@@ -36,7 +38,7 @@ class Ingredient:
         self.name = name
         tmp = re.search(r'(\d+,?\d*\s?)(мл|л|г|кг|МЛ|Л|КГ|Г)', name)
         self.quantity = None
-        self.price_per_gr = None
+        self.price_per_gr = 0
         if tmp is not None:
             self.normalize_quantity(tmp)
             self.price_per_gr = self.price / self.quantity
