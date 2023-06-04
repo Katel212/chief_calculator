@@ -7,7 +7,7 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Новый рецепт</legend>
                 {{ recipe_form|crispy }}
-            <div class="ingredients">
+            <div id="ing-table" class="ingredients">
             <legend class="border-bottom mb-4">Ингредиенты</legend>
 
                 <table style="border-spacing: 1rem 1rem;border-collapse: separate;">
@@ -15,12 +15,13 @@
                     <th>Количество(гр)</th>
                     {{ ingredients_formset.management_form }}
                     {% for form in ingredients_formset %}
-                        <tr>
+                        <tr class="ingredient-form">
                             <td>{{ form.name }}</td>
                         <td> {{ form.quantity }}</td>
                         </tr>
                     {% endfor %}
-                </table>
+            </table>
+            <button id="add-form" type="button">Добавить ингредиент</button>
             </div>
             </fieldset>
             <div class="form-group">
@@ -28,4 +29,28 @@
             </div>
         </form>
     </div>
+
+   <script>
+        let indForm = document.querySelectorAll(".ingredient-form")
+        let container = document.querySelector("#ing-table")
+        let addButton = document.querySelector("#add-form")
+        let totalForms = document.querySelector("#id_ingredients-TOTAL_FORMS")
+
+        let formNum = indForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = indForm[0].cloneNode(true)
+            let formRegex = RegExp(`ingredients-(\\d){1}-`,'g')
+
+            formNum++
+
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `ingredients-${formNum}-`)
+            container.insertBefore(newForm, addButton)
+
+            totalForms.setAttribute('value', `${formNum+1}`)
+        }
+    </script>
 {% endblock content %}
