@@ -4,26 +4,7 @@ body {
   position: relative;
   background-size: cover;
   font-family: 'Arial', sans-serif; }
-.btn-outline-primary {
-  color: #835648;
-  border-color: #835648; }
-  .btn-outline-primary:hover {
-    color: #fff;
-    background-color: #917c55;
-    border-color: #917c55; }
-  .btn-outline-primary:focus, .btn-outline-primary.focus {
-    box-shadow: 0 0 0 0.2rem rgba(145, 124, 85, 0.5); }
-  .btn-outline-primary.disabled, .btn-outline-primary:disabled {
-    color: #917c55;
-    background-color: transparent; }
-  .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active,
-  .show > .btn-outline-primary.dropdown-toggle {
-    color: #fff;
-    background-color: #917c55;
-    border-color: #917c55; }
-    .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .btn-outline-primary:not(:disabled):not(.disabled).active:focus,
-    .show > .btn-outline-primary.dropdown-toggle:focus {
-      box-shadow: 0 0 0 0.2rem rgba(145, 124, 85, 0.5); }
+
 
 .main-description{
   margin-left:100px;
@@ -693,6 +674,20 @@ body {
   margin-top: 1.875rem;
   margin-bottom: 0.625rem;
 }
+.post-preview > a > .post-title-changed  {
+  margin-top: 1.875rem;
+  margin-bottom: 0.625rem;
+  background-color: #ffdfed;
+  height: 40px;
+  display: inline-block;
+  max-width: 580px;
+  border-radius: 15px;
+}
+.recipe-price > h3{
+  font-weight: 300;
+  font-size: 1.25rem;
+  margin-bottom: 0.625rem;
+}
 .post-preview > a > .post-subtitle {
   font-weight: 300;
   font-size: 1.25rem;
@@ -782,7 +777,8 @@ td.row-link{
   width: 600px;
   padding-top: 30px;
   position: relative;
-  left: 15%;
+  left: 70%;
+  left: 70%;
 }
 .final-price-info{
   padding-right: 15px;
@@ -820,7 +816,30 @@ display: inline-block;
 width: 85px;
   color: #fff2ec;
 }
+
+.add-ingredient-button{
+  background-color:#835648;
+  height: 30px;
+display: inline-block;
+width: 220px;
+  color: #fff2ec;
+  border-radius: 30px;
+ }
 .card-block-button:active{
 }
+.save-button{
+  border-radius: 5px;
+  color: #835648;
+  background-color: #ffff;
+  border-color: #835648; }
+.save-button:hover {
+    color: #997054;
+    background-color: #fff2ec;
+  border-color: #997054; }
 
+.form-group > .btn-outline-info{
+  color: #835648;
+  background-color: #ffff;
+  border-color: #835648;
+}
 

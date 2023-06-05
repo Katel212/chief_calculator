@@ -4,7 +4,7 @@
 {% load static %}
 
 {% block title %}<title>Личный кабинет</title>{%endblock%}
-{%block head%}<div class="head-h1"><h1 >Сохраненные рецепты</h1></div>
+{%block head%}<div class="head-h1"><h1 >Мои рецепты</h1></div>
 <div class="add-recipe-btn" style="float: right;max-width: 200px;"><a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "add_recipe"%}'>Добавить рецепт</a></div>
 {%endblock%}
 {% block content %}
@@ -13,9 +13,17 @@
                     {% if recipes %}
                     {% for recipe in recipes %}
                     <div class="post-preview">
-                    <div class="recipe-price" style="float: right">{{ recipe.price }}</div>
+                    {% if recipe.final_price is not None %}
+                    <div class="recipe-price" style="float: right">
+                        <h3 class="post-subtitle" style="float: right" >{{ recipe.final_price }}</h3>
+                    </div>
+                    {% endif %}
                         <a href="{{recipe.get_absolute_url}}">
-                            <h2 class="post-title">{{recipe.name}}</h2>
+                            {% if recipe.price_changed %}
+                                <h2 class="post-title-changed">{{recipe.name}}</h2>
+                            {% else %}
+                                <h2 class="post-title">{{recipe.name}}</h2>
+                            {% endif %}
                             <h3 class="post-subtitle">{{recipe.notes}}</h3>
                         </a>
 

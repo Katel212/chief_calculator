@@ -33,7 +33,7 @@
                 {% else %}
                     <td class="row-weight">{{ v.quantity }}</td>
                     <td class="row-price">{{ v.price }}</td>
-                    <td class="row-link"><a href="#">{{ v.name}}</a></td>
+                    <td class="row-link"><a href="{{ v.url }}">{{ v.name}}</a></td>
                 {% endif %}
             </tr>
             {% endfor %}
@@ -58,6 +58,7 @@
 <!--переменная с ценой--><p>{{best_store.recommend_price}}</p>
     </div>
     </div>
+    <form method="POST">
     <div class="final-price">
     <div class="final-price-info">
         <p>
@@ -65,12 +66,18 @@
         </p>
     </div>
     <div class="final-price-price">
-        <input autofocus placeholder="placeholder" style="width: 50px">
-    </div>
+
+            {% csrf_token %}
+            {{ form }}
+
+
     </div>
     <div class="add-recipe-btn" style="margin-left: auto;margin-right: 100px;max-width: 100px;">
-    <a class="btn btn-primary rounded-pill px-3" type="button" href = '#'>Сохранить</a>
-</div>
+    <button class="btn btn-primary rounded-pill px-3"  type="submit" href = '#'>Сохранить</button>
+    </div>
+    </div>
+    </form>
+
     <div class="card-choose">
     {% for k,v in stores_info.items %}
     <div class="card-block">

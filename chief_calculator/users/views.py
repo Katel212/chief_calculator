@@ -5,7 +5,6 @@ from django.contrib import messages
 from .forms import UserRegisterForm
 
 def register(request):
-    user = User.objects.get(id=request.user.id)
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -15,5 +14,5 @@ def register(request):
             return redirect('index')
     else:
         form = UserRegisterForm()
-    return render(request, 'users/auth.html', {'form': form, 'user':user})
+        return render(request, 'users/auth.html', {'form': form})
 

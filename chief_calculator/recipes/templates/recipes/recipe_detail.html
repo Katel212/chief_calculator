@@ -34,12 +34,18 @@
             <tr>
                 <th>Ингредиент</th>
                 <th>Вес</th>
+                {% if recipe.from_store is not None %}
+                    <th>{{ recipe.from_store }}</th>
+                {% endif %}
             </tr>
             {% for i in ingredients %}
 
             <tr class="row-row">
                 <td class="row-ingred">{{i.name}}</td>
                 <td class="row-weight">{{ i.quantity }}</td>
+                 {% if recipe.from_store is not None %}
+                    <td class="row-link"><a href="{{ i.url }}">{{ i.name}}</a></td>
+                {% endif %}
             </tr>
             {% endfor %}
 
@@ -47,6 +53,26 @@
         </table>
     </div>
 <div class="recipe-notes" style="margin-top: 3rem;"><article>{{ recipe.notes }}</article></div>
+    </div>
+    <div>
+    {% if recipe.cost_price is not None %}
+    <div class="recommend-price">
+    <div class="recommend-price-info">
+        <p>Себестоимость</p>
+    </div>
+    <div class="recommend-price-price">
+<!--переменная с ценой--><p>{{ recipe.cost_price }}</p>
+    </div>
+    </div>
+    <div class="recommend-price">
+    <div class="recommend-price-info">
+        <p>Ваша стоимость</p>
+    </div>
+    <div class="recommend-price-price">
+<!--переменная с ценой--><p>{{recipe.final_price}}</p>
+    </div>
+    </div>
+    {% endif %}
     </div>
 <div class="add-recipe-btn" style="margin-top: 3rem; margin-left: auto;margin-right: 10px;max-width: 100px;">
     <a class="btn btn-primary rounded-pill px-3" type="button" href = '{% url "recipe_price" recipe.id None %}'>Рассчитать себестоимость</a>

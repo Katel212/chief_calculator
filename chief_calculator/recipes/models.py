@@ -9,7 +9,9 @@ class Recipe(models.Model):
     is_published = models.BooleanField(default=False)
     user = models.ForeignKey(User, to_field='id', on_delete=models.CASCADE)
     from_store = models.CharField(max_length=100, null=True, blank=True)
-    price = models.FloatField(blank=True, null=True)
+    cost_price = models.FloatField(blank=True, null=True)
+    final_price = models.FloatField(blank=True, null=True)
+    price_changed = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('recipe_detail', args=[str(self.id)])

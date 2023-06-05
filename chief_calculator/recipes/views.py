@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 
-from .forms import RecipeForm, IngredientForm
+from .forms import RecipeForm, IngredientForm, SubmitPriceForm
 from .parser import parser_sdelay_tort as pst
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -57,35 +57,55 @@ def show_recipe(request, id_item):
 
 def recipe_price(request, id_item, store):
     recipe = Recipe.objects.get(id=id_item)
-    ingredients = Ingredient.objects.filter(recipe=recipe.id)
-    ingredients_dict = {}
-    for i in ingredients:
-        ingredients_dict[i.name] = i.quantity
-    if store == 'None':
-        stores_info = {}
-        st_info = pst.ParserSdelayTort(ingredients_dict)
-        st_info.get_ingredients_info()
-        stores_info['Сделай торт'] = st_info
-        tm_info = ptm.ParserTortomaster(ingredients_dict)
-        tm_info.get_ingredients_info()
-        stores_info['Тортомастер'] = tm_info
+    if request.method == "POST":
+        form = SubmitPriceForm(request.POST)
+        if form.is_valid():
+            s = cache.get('stores_info')
 
-        pk_info = ppk.ParserPekarKonditer(ingredients_dict)
-        pk_info.get_ingredients_info()
-        stores_info['Пекарь кондитер'] = pk_info
-
-        best_store = best_offer(stores_info)
-        cache.set('stores_info', stores_info, 86400)
-
-        return render(request, 'recipes/recipe_price.html', context={'recipe': recipe,
-                                                                     'stores_info': stores_info,
-                                                                     'best_store': stores_info[best_store]})
+            bs = cache.get('best_store')
+            recipe.cost_price = s[bs].cart_price
+            recipe.final_price = form.cleaned_data['price']
+            recipe.from_store = bs
+            recipe.save()
+            return redirect('recipe_detail', id_item=recipe.id)
     else:
-        s = cache.get('stores_info')
+        ingredients = Ingredient.objects.filter(recipe=recipe.id)
+        ingredients_dict = {}
+        for i in ingredients:
+            ingredients_dict[i.name] = i.quantity
+        if store == 'None':
+            stores_info = {}
+            st_info = pst.ParserSdelayTort(ingredients_dict)
+            st_info.get_ingredients_info()
+            stores_info['Сделай торт'] = st_info
+            tm_info = ptm.ParserTortomaster(ingredients_dict)
+            tm_info.get_ingredients_info()
+            stores_info['Тортомастер'] = tm_info
 
-        return render(request, 'recipes/recipe_price.html', context={'recipe': recipe,
-                                                                     'stores_info': s,
-                                                                     'best_store': s[store]})
+            pk_info = ppk.ParserPekarKonditer(ingredients_dict)
+            pk_info.get_ingredients_info()
+            stores_info['Пекарь кондитер'] = pk_info
+
+            best_store = best_offer(stores_info)
+            cache.set('stores_info', stores_info, 86400)
+            cache.set('best_store',best_store,86400)
+
+            form = SubmitPriceForm(initial={"price": stores_info[best_store].recommend_price})
+
+            return render(request, 'recipes/recipe_price.html', context={'recipe': recipe,
+                                                                         'stores_info': stores_info,
+                                                                         'best_store': stores_info[best_store],
+                                                                         'form': form})
+        else:
+            s = cache.get('stores_info')
+            cache.set('best_store',store,86400)
+
+            form = SubmitPriceForm(initial={"price": s[store].recommend_price})
+
+            return render(request, 'recipes/recipe_price.html', context={'recipe': recipe,
+                                                                         'stores_info': s,
+                                                                         'best_store': s[store],
+                                                                         'form': form})
 
 
 def best_offer(stores_info: dict):
