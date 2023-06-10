@@ -122,7 +122,6 @@ def best_offer(stores_info: dict):
         elif len(filtered_ingredients) == best_quantity and store_object.cart_price_per_gr < best_price:
             best_price = store_object.cart_price
             store = s[0]
-        print(store)
     return store
 
 
