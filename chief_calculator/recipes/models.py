@@ -22,6 +22,7 @@ class Recipe(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
+    store_name = models.CharField(max_length=255, blank=True, null=True)
     quantity = models.FloatField()
     url = models.URLField(blank=True, null=True)
     recipe = models.ForeignKey('Recipe', to_field='id', on_delete=models.CASCADE)

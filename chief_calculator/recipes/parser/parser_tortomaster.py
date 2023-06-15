@@ -22,11 +22,20 @@ class ParserTortomaster(ParserIngredients):
         super().__init__(ingredients)
 
     @staticmethod
-    def get_search_string(ingredient_list: str):
+    def get_search_string_many_ingredient(ingredient_list: str):
         tmp_name = "+".join(ingredient_list.split())
         r = f"https://rostov-na-donu.tortomaster.ru/catalog/?q={tmp_name}&s=Найти+товар"
         return r
 
+    def check_ingredient_price(self, ingredient):
+        content = requests.get(ingredient.url).content.decode("utf8")
+        soup = BeautifulSoup(content, "lxml")
+        result = soup.find("div", class_="prices element-prices").contents[1].text
+
+        if int(re.search(r'\d+', result).group(0)) != ingredient.price:
+            return False
+        else:
+            return True
     def get_ingredients_info(self):
         for i in self.raw_ingredients.keys():
             while True:

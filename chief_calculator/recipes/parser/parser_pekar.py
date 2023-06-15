@@ -17,7 +17,15 @@ class ParserPekarKonditer(ParserIngredients):
         self.cart_price = int(self.cart_price)
         self.recommend_price = self.cart_price*3
 
+    def check_ingredient_price(self, ingredient):
+        content = requests.get(ingredient.url).content.decode("latin-1")
+        soup = BeautifulSoup(content, "lxml")
+        result = soup.find("div", class_="priup").contents[1].text
 
+        if int(re.search(r'\d+', result).group(0)) != ingredient.price:
+            return False
+        else:
+            return True
     def most_matching_ingredient(self):
         for i in self.raw_ingredients:
             needed_quantity = self.raw_ingredients[i]
@@ -33,7 +41,7 @@ class ParserPekarKonditer(ParserIngredients):
             self.final_ingredients[i] = self.ingredients_info[i][idx]
 
     @staticmethod
-    def get_search_string(ingredient_list: str):
+    def get_search_string_many_ingredient(ingredient_list: str):
         tmp_name = "+".join(ingredient_list.split())
         return f'https://rostov.konditermarket.ru/spage/?q={tmp_name}&s='
 

@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import RecipeForm, IngredientForm, SubmitPriceForm
 from .parser import parser_sdelay_tort as pst
+from .parser import parser_tortomaster as ptm
+from .parser import parser_pekar as ppk
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from .models import Recipe, Ingredient
@@ -12,9 +14,6 @@ from django.views.generic import (
 from django.core.cache import cache
 
 from users import views
-
-from .parser import parser_tortomaster as ptm
-from .parser import parser_pekar as ppk
 
 
 def index(request):

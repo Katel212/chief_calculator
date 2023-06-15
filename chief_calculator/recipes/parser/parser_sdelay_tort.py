@@ -12,9 +12,24 @@ class ParserSdelayTort(ParserIngredients):
         super().__init__(ingredients)
 
     @staticmethod
-    def get_search_string(ingredient_list: str):
+    def get_search_string_many_ingredient(ingredient_list: str):
         tmp_name = "+".join(ingredient_list.split())
         return "https://sdelay-tort.ru/search?q=" + tmp_name
+
+    @staticmethod
+    def check_ingredient_price(self, ingredient):
+        content = requests.get(self.get_search_string(ingredient.store_name)).content.decode("utf8")
+        soup = BeautifulSoup(content, "lxml")
+        result = soup.findAll("div", class_="product-preview__content")
+        for p in result:
+            u = f'https://sdelay-tort.ru{p.find("div", class_="product-preview__title").contents[1].attrs["href"]}'
+            if u == ingredient.url:
+                priceI = p.find("div", class_="product-preview__price-cur product-preview__price-range").contents[0]
+                if int(re.search(r'\d+', priceI).group(0)) != ingredient.price:
+                    return False
+                else:
+                    return True
+        return False
 
     def get_ingredients_info(self):
         for i in self.raw_ingredients.keys():
