@@ -11,7 +11,9 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Создан аккаунт {username}!')
-            return redirect('index')
+            return redirect('login')
+        else:
+            return render(request, 'users/auth.html', {'form': form})
     else:
         form = UserRegisterForm()
         return render(request, 'users/auth.html', {'form': form})
