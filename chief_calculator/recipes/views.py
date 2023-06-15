@@ -30,7 +30,9 @@ def profile(request):
 
 def show_recipe(request, id_item):
     recipe = Recipe.objects.get(id=id_item)
-    ingredients = Ingredient.objects.filter(recipe=recipe.id)
+    ingredients = cache.get(f'recipe_{recipe.id}')
+    if not ingredients:
+        ingredients = Ingredient.objects.filter(recipe=recipe.id)
     # если авторизован, тогда есть смысл проверять принадлежность
     if request.user.is_authenticated:
         belonging = True if recipe.user.id == request.user.id else False
@@ -88,7 +90,7 @@ def recipe_price(request, id_item, store):
 
             best_store = best_offer(stores_info)
             cache.set('stores_info', stores_info, 86400)
-            cache.set('best_store',best_store,86400)
+            cache.set('best_store', best_store, 86400)
 
             form = SubmitPriceForm(initial={"price": stores_info[best_store].recommend_price})
 
@@ -98,7 +100,7 @@ def recipe_price(request, id_item, store):
                                                                          'form': form})
         else:
             s = cache.get('stores_info')
-            cache.set('best_store',store,86400)
+            cache.set('best_store', store, 86400)
 
             form = SubmitPriceForm(initial={"price": s[store].recommend_price})
 
@@ -135,10 +137,16 @@ def add_recipe(request):
                 new_recipe = recipe_form.save(commit=False)
                 new_recipe.user = request.user
                 new_recipe.save()
+                ingr_list = []
+                i = 0
                 for f in ingredients_formset:
-                    new_ingredient = f.save(commit=False)
-                    new_ingredient.recipe = new_recipe
-                    new_ingredient.save()
+                    if f.data.get(f'ingredients-{i}-name'):
+                        new_ingredient = f.save(commit=False)
+                        new_ingredient.recipe = new_recipe
+                        new_ingredient.save()
+                        ingr_list.append(new_ingredient)
+                    i += 1
+                cache.set(f'recipe_{new_recipe.id}', ingr_list, 60 * 60 * 24 * 3)
                 return redirect('recipe_detail', id_item=new_recipe.id)
             context = {"ingredients_formset": ingredients_formset, "recipe_form": recipe_form}
             return render(request, 'recipes/recipe_form.html', context=context)
