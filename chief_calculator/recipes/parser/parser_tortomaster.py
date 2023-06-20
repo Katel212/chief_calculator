@@ -2,11 +2,14 @@ import re
 import time
 
 from .parser_helper import ParserIngredients, Ingredient
+from ..models import Ingredient as IngredientModel
 from bs4 import BeautifulSoup
 import requests
 
 
 class ParserTortomaster(ParserIngredients):
+    def __init__(self, ingredients):
+        super().__init__(ingredients)
 
     def calculate_cart_price(self):
         for k, v in self.raw_ingredients.items():
@@ -16,18 +19,14 @@ class ParserTortomaster(ParserIngredients):
 
         self.recommend_price = self.cart_price*3
 
-
-
-    def __init__(self, ingredients):
-        super().__init__(ingredients)
-
     @staticmethod
-    def get_search_string_many_ingredient(ingredient_list: str):
+    def get_search_string(ingredient_list: str):
         tmp_name = "+".join(ingredient_list.split())
         r = f"https://rostov-na-donu.tortomaster.ru/catalog/?q={tmp_name}&s=Найти+товар"
         return r
 
     def check_ingredient_price(self, ingredient):
+        ingredient = IngredientModel.objects.get(id=ingredient)
         content = requests.get(ingredient.url).content.decode("utf8")
         soup = BeautifulSoup(content, "lxml")
         result = soup.find("div", class_="prices element-prices").contents[1].text

@@ -18,7 +18,6 @@ class ParserIngredients(ABC):
     def get_search_string(ingredient_list: str):
         pass
 
-    @staticmethod
     @abstractmethod
     def check_ingredient_price(self, ingredient):
         pass

@@ -3,6 +3,7 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
+from ..models import Ingredient as IngredientModel
 
 from .parser_helper import ParserIngredients, Ingredient
 
@@ -18,6 +19,7 @@ class ParserPekarKonditer(ParserIngredients):
         self.recommend_price = self.cart_price*3
 
     def check_ingredient_price(self, ingredient):
+        ingredient = IngredientModel.objects.get(id=ingredient)
         content = requests.get(ingredient.url).content.decode("latin-1")
         soup = BeautifulSoup(content, "lxml")
         result = soup.find("div", class_="priup").contents[1].text
@@ -41,7 +43,7 @@ class ParserPekarKonditer(ParserIngredients):
             self.final_ingredients[i] = self.ingredients_info[i][idx]
 
     @staticmethod
-    def get_search_string_many_ingredient(ingredient_list: str):
+    def get_search_string(ingredient_list: str):
         tmp_name = "+".join(ingredient_list.split())
         return f'https://rostov.konditermarket.ru/spage/?q={tmp_name}&s='
 

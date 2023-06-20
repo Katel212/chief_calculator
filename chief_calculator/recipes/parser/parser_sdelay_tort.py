@@ -3,6 +3,7 @@ import time
 
 from bs4 import BeautifulSoup
 import requests
+from ..models import Ingredient as IngredientModel
 
 from .parser_helper import ParserIngredients, Ingredient
 
@@ -12,12 +13,12 @@ class ParserSdelayTort(ParserIngredients):
         super().__init__(ingredients)
 
     @staticmethod
-    def get_search_string_many_ingredient(ingredient_list: str):
+    def get_search_string(ingredient_list: str):
         tmp_name = "+".join(ingredient_list.split())
         return "https://sdelay-tort.ru/search?q=" + tmp_name
 
-    @staticmethod
     def check_ingredient_price(self, ingredient):
+        ingredient = IngredientModel.objects.get(id=ingredient)
         content = requests.get(self.get_search_string(ingredient.store_name)).content.decode("utf8")
         soup = BeautifulSoup(content, "lxml")
         result = soup.findAll("div", class_="product-preview__content")

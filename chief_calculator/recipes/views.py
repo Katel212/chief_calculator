@@ -1,3 +1,4 @@
+from background_task.models import Task
 from django.contrib.auth.decorators import login_required
 
 from .forms import RecipeForm, IngredientForm, SubmitPriceForm
@@ -14,6 +15,8 @@ from django.views.generic import (
 from django.core.cache import cache
 
 from users import views
+
+from . import tasks
 
 
 def index(request):
@@ -58,6 +61,7 @@ def show_recipe(request, id_item):
 
 def recipe_price(request, id_item, store):
     recipe = Recipe.objects.get(id=id_item)
+    ingredients = Ingredient.objects.filter(recipe=recipe.id)
     if request.method == "POST":
         form = SubmitPriceForm(request.POST)
         if form.is_valid():
@@ -68,9 +72,14 @@ def recipe_price(request, id_item, store):
             recipe.final_price = form.cleaned_data['price']
             recipe.from_store = bs
             recipe.save()
+            for i in ingredients:
+                if s[bs].final_ingredients[i.name] != 'не найден':
+                    i.url = s[bs].final_ingredients[i.name].url
+                    i.store_name = s[bs].final_ingredients[i.name].name
+                    i.save()
+            tasks.check_price(recipe.id, repeat=Task.WEEKLY)
             return redirect('recipe_detail', id_item=recipe.id)
     else:
-        ingredients = Ingredient.objects.filter(recipe=recipe.id)
         ingredients_dict = {}
         for i in ingredients:
             ingredients_dict[i.name] = i.quantity
